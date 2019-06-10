@@ -6,3 +6,4 @@ GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap co
 Use examples:
 GOMCL.py -Ct 0.5 -I 1.5 EnrichedGO
 GOMCL.py -SI JC -Ct 0.5 -I 1.5 EnrichedGO
+
