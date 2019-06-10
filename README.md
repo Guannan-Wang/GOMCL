@@ -2,7 +2,7 @@
 a Python tool for Gene Ontology gene sets clustering
 
 
-GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap coefficient) or JC (Jaccard coefficient).
+GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap coefficient) or JC (Jaccard coefficient). \t
 
 Use examples:
 
