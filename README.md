@@ -24,7 +24,7 @@ GOMCL.py -SI JC -Ct 0.5 -I 1.5 EnrichedGO
  unzip GOMCL-master.zip
  cd GOMCL-master
  chmod 755 *.py scripts/*.py
- export PATH=/path/to/GOMCL.py:$PATH 
+ export PATH=/path/to/GOMCL-master:$PATH 
 ```
 
 ## Running the test
