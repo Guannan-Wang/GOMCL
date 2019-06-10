@@ -14,8 +14,8 @@ synopsis = "\n\
 #############################################################################################################################################\n\
 #GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap coefficient) or JC (Jaccard coefficient).                    #\n\
 #Use examples:                                                                                                                              #\n\
-#   GOMCL.py -Ct 0.5 -I 1.5 EnrichedGO.txt                                                                                                  #\n\
-#   GOMCL.py -SI JC -Ct 0.5 -I 1.5 EnrichedGO.txt                                                                                           #\n\
+#   GOMCL.py -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                                  #\n\
+#   GOMCL.py -SI JC -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                           #\n\
 #                                                                                                                                           #\n\
 #############################################################################################################################################"
 
