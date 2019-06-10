@@ -21,7 +21,7 @@ GOMCL.py -SI JC -Ct 0.5 -I 1.5 EnrichedGO
 **1. Download zip file and install**
 ```
  wget https://github.com/Guannan-Wang/GOMCL/archive/master.zip
- unzip GOMCL-master.zip
+ unzip master.zip
  cd GOMCL-master
  chmod 755 *.py scripts/*.py
  export PATH=/path/to/GOMCL-master:$PATH 
