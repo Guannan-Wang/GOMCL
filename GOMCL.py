@@ -14,8 +14,8 @@ synopsis = "\n\
 #############################################################################################################################################\n\
 #GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap coefficient) or JC (Jaccard coefficient).                    #\n\
 #Use examples:                                                                                                                              #\n\
-#   GOMCL.py -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                                  #\n\
-#   GOMCL.py -SI JC -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                           #\n\
+#   GOMCL.py -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                          #\n\
+#   GOMCL.py -SI JC -Ct 0.5 -I 1.5 OBOfile EnrichedGO.txt                                                                                   #\n\
 #                                                                                                                                           #\n\
 #############################################################################################################################################"
 
@@ -30,19 +30,23 @@ if __name__ == "__main__":
 	parser.add_argument("-I", metavar = None, dest = "inflation", help = "Inflation value, main handle for cluster granularity, usually chosen somewhere in the range [1.2-5.0] (default: %(default)s)", action = "store", nargs = None, const = None, default = "2.0", type = float, choices = None) 
 	parser.add_argument("-SL", metavar = None, dest = "sig", help = "Signifance level (p-value cutoff) used in the enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "0.05", type = float, choices = None)
 	parser.add_argument("-hm",  dest = None, help = "Only needed if a similarity heatmap is desired", action = "store_true", default = None ) 
-	parser.add_argument("-nx",  dest = None, help = "Only needed if a similarity-based network is desired", action = "store_true", default = None ) 
+	parser.add_argument("-nw",  dest = None, help = "Only needed if a similarity-based network is desired", action = "store_true", default = None ) 
+	parser.add_argument("-d", dest = "dswitch", help = "Only needed if depth for input GO terms is desired", action = "store_true", default = None)
 	args = parser.parse_args() 
 	
-	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize)
-	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", "w") as fin_enGOfltrd:
-		fin_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
+	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp", "w") as fin_enGOfltrd_temp:
+		if args.dswitch:
+			fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+		else:
+			fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 		for element_enGOfltrd in enGOfltrd_list:
-			fin_enGOfltrd.write(element_enGOfltrd + "\n")
-	fin_enGOfltrd.close()
+			fin_enGOfltrd_temp.write(element_enGOfltrd + "\n")
+	fin_enGOfltrd_temp.close()
 
-	enGOfmtfltr_info_dict, gosim_dict = go_compare(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", args.simindex)
+	enGOfmtfltr_info_dict, gosim_dict = go_compare(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp", 1, 0, args.simindex)
 	
-	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + ".simfltred", "w") as fout_simfltr:
+	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".simfltred", "w") as fout_simfltr:
 		fout_simfltr.write("GOtermID-A"	+ "\t" + "GOtermID-B" + "\t" + "Similarity (" + str(args.simindex) + ")" + "\n")
 		processed = []
 		for key_querygo in gosim_dict:
@@ -57,8 +61,8 @@ if __name__ == "__main__":
 				else:
 					fout_simfltr.write(str(key_querygo) + "\t" + "" + "\t" + "" + "\n")
 
+	go_clstr_dict, gene_clstr_dict, clstred_go_dict, clstred_gene_dict = go_assign_cluster(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp", args.simindex, args.cutoff, args.inflation)
 	
-	go_clstr_dict, gene_clstr_dict, clstred_go_dict, clstred_gene_dict = go_assign_cluster(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", args.simindex, args.cutoff, args.inflation)
 	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstrinfo", "w") as fout_clstrinfo:
 		fout_clstrinfo.write("GO.Clstr" + "\t" + "# of GOs" + "\t" + "# of genes" + "\n")
 		for clstrid in clstred_go_dict:
@@ -66,21 +70,26 @@ if __name__ == "__main__":
 	fout_clstrinfo.close()
 	
 	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", "w") as fout_clstr:
-		fout_clstr.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\t" + "Clstr" + "\n")
-		try:
-			for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[7]))):
-				fout_clstr.write("\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\t" + str(go_clstr_dict[key_enGO]) + "\n")
-		except TypeError:
-			for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]),int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]))):
-				fout_clstr.write("\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\t" + str(go_clstr_dict[key_enGO]) + "\n")
+		if args.dswitch:
+			fout_clstr.write("Clstr" + "\t" + "Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			try:
+				for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[7]))):
+					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
+			except TypeError:
+				for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]))):
+					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
+		else:
+			fout_clstr.write("Clstr" + "\t" + "Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[6]))):
+					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
 	fout_clstr.close()
 	
 	if args.hm:
-		sim_plot(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", args.simindex, args.cutoff, args.inflation)
-	if args.nx:
-		sim_newtork(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", args.simindex, args.cutoff, args.inflation, args.sig)
+		sim_plot(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation)
+	if args.nw:
+		sim_newtork(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation, args.sig, args.dswitch)
 
-	
+#	os.remove(str(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp"))
 	
 	
 	
