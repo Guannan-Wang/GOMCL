@@ -12,8 +12,6 @@ except ImportError as ErrorMessage:
 	print(str(ErrorMessage))
 	sys.exit()
 	
-	
-
 def obo_parser(OBOInput):
 	fin_obo = open(OBOInput,"rU")
 	lines_obo = fin_obo.readlines()

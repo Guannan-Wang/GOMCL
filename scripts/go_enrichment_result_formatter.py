@@ -25,13 +25,14 @@ synopsis = "\n\
 #############################################################################################################################################"
 
 
-def goea_formatter(OBOInput, goeatool, enGOraw):
+def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 	"""
 	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler, Enrichr
 	Required:
 	OBOInput	obo file should be provided, e.g. go-basic.obo
 	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler, Enrichr]
 	enGOraw	the enrichment test reults from the go enrichment tool used
+	dswitch switch for depth ON and OFF
 	"""
 	obo_go_name_dict, obo_go_namespace_dict, obo_go_alt_id_dict, obo_go_is_obsolete_dict, obo_go_is_a_dict, obo_go_relationship_dict = obo_parser(OBOInput)
 	go_hierarchy_network = construct_go_hierarchy_digraph(OBOInput)
@@ -98,13 +99,16 @@ def goea_formatter(OBOInput, goeatool, enGOraw):
 		if goea_go_id in obo_go_name_dict:
 			if obo_go_is_obsolete_dict[goea_go_id] <> "true":
 				goea_go_type = "BP" if obo_go_namespace_dict[goea_go_id] == "biological_process" else "MF" if obo_go_namespace_dict[goea_go_id] == "molecular_function" else "CC" if obo_go_namespace_dict[goea_go_id] == "cellular_component" else ""
-				if goea_go_id not in RootTerm_dict.values():
-					goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]],target = goea_go_id) - 1)
-					goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]], target = goea_go_id), key = len)) - 1)
+				if dswitch is True:
+					if goea_go_id not in RootTerm_dict.values():
+						goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]],target = goea_go_id) - 1)
+						goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]], target = goea_go_id), key = len)) - 1)
+					else:
+						goea_go_id_level = "L0"
+						goea_go_id_depth = "D0"
+					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 				else:
-					goea_go_id_level = "L0"
-					goea_go_id_depth = "D0"
-				enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
+					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 			else:
 				print(str(goea_go_id) + " is labeled as \"obselete\" in the obo annotation file, will be skipped!")
 		else:
@@ -113,23 +117,30 @@ def goea_formatter(OBOInput, goeatool, enGOraw):
 				goea_ori_go_id = goea_ori_go_id_list[0]
 				if obo_go_is_obsolete_dict[goea_ori_go_id] <> "true":
 					goea_go_type = "BP" if obo_go_namespace_dict[goea_ori_go_id] == "biological_process" else "MF" if obo_go_namespace_dict[goea_ori_go_id] == "molecular_function" else "CC" if obo_go_namespace_dict[goea_ori_go_id] == "cellular_component" else ""
-					if goea_ori_go_id not in RootTerm_dict.values():
-						goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]],target = goea_ori_go_id) - 1)
-						goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]], target = goea_ori_go_id), key = len)) - 1)
+					if dswitch is True:
+						if goea_ori_go_id not in RootTerm_dict.values():
+							goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]],target = goea_ori_go_id) - 1)
+							goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]], target = goea_ori_go_id), key = len)) - 1)
+						else:
+							goea_go_id_level = "L0"
+							goea_go_id_depth = "D0"
+						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 					else:
-						goea_go_id_level = "L0"
-						goea_go_id_depth = "D0"
-					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
+						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 				else:
 					print(str(goea_go_id) + " is labeled as \"obselete\" in the obo annotation file, will be skipped!")
 			else:
 				print(str(goea_go_id) + " is not found in the obo annotation file, will be skipped!")
 				continue
-			
-	enGOfmtted_list = sorted(enGOfmtted_list, key = lambda element: int(element.split("\t")[3].split("D")[1]))
+	
+	if dswitch is True:		
+		enGOfmtted_list = sorted(enGOfmtted_list, key = lambda element: int(element.split("\t")[3].split("D")[1]))
+	else:
+		enGOfmtted_list = sorted(enGOfmtted_list, key = lambda element: int(element.split("\t")[6]), reverse = True)
+
 	return enGOfmtted_list
 
-def goea_filter(OBOInput, goeatool, enGOraw, gosize):
+def goea_filter(OBOInput, goeatool, enGOraw, gosize, dswitch = False):
 	"""
 	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler, Enrichr
 	Required:
@@ -137,11 +148,15 @@ def goea_filter(OBOInput, goeatool, enGOraw, gosize):
 	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler, Enrichr]
 	enGOraw	the enrichment test reults from the go enrichment tool used
 	gosize	threshold for the size of GO terms, only GO terms below this threshold will be printed out
+	dswitch switch for depth ON and OFF
 	"""
-	enGOfmtted_list = goea_formatter(OBOInput, goeatool, enGOraw)
+	enGOfmtted_list = goea_formatter(OBOInput, goeatool, enGOraw, dswitch)
 	enGOfltrd_list = []
 	for element_enGOfmtted in enGOfmtted_list:
-		go_size_ref = int(element_enGOfmtted.split("\t")[7]) # number of genes in a go term from the reference annotation.
+		if dswitch is True:
+			go_size_ref = int(element_enGOfmtted.split("\t")[7]) # number of genes in a go term from the reference annotation.
+		else:
+			go_size_ref = int(element_enGOfmtted.split("\t")[6])
 		if go_size_ref <= int(gosize):
 			enGOfltrd_list.append(element_enGOfmtted)
 	return enGOfltrd_list
@@ -153,23 +168,29 @@ if __name__ == "__main__":
 	parser.add_argument("enGO", metavar = "-enGO", help = "Enriched GO input file may be from different GO enrichment analysis tools (e.g. BiNGO, agriGO, AmiGO, etc..", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## See below.
 	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "AmiGO", "PANTHER", "GOrilla", "gProfiler", "Enrichr"]) ## See below.
 	parser.add_argument("-gosize", metavar = None, dest = None, help = "Threshold for the size of GO terms, only GO terms below this threshold will be printed out", action = "store", nargs = None, const = None, default = None, type = int, choices = None)
-#	parser.add_argument("-sep",  dest = None, help = "Only needed when separating GO categories into different output files is desired", action = "store_true", default = None ) ## Argument present --> true, not present --> false. The followings are not compatible with "store_true": metavar = None, nargs = None,const = None, type = None, choices = None
+	parser.add_argument("-d", dest = "dswitch", help = "Calculate depth for input GO terms", action = "store_true", default = None) ## Argument present --> true, not present --> false. The followings are not compatible with "store_true": metavar = None, nargs = None,const = None, type = None, choices = None
 	args = parser.parse_args() 
 #	print(args.OBOInput, args.got, args.enGO, args.gosize)
 
 	if args.gosize is None:
 		print("Printing full GO list")
 		with open(os.path.splitext(args.enGO)[0] + ".enGOfmtted", "w") as fout_enGOfmtted:
-			fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			enGOfmtted_list = goea_formatter(args.OBOInput, args.got, args.enGO)
+			if args.dswitch:
+				fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			else:
+				fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			enGOfmtted_list = goea_formatter(args.OBOInput, args.got, args.enGO, args.dswitch)
 			for element_enGOfmtted in enGOfmtted_list:
 				fout_enGOfmtted.write(element_enGOfmtted + "\n")
 		fout_enGOfmtted.close()
 	else:
 		print("Printing filtered GO list")
 		with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", "w") as fout_enGOfltrd:
-			fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize)
+			if args.dswitch:
+				fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			else:
+				fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
 			for element_enGOfltrd in enGOfltrd_list:
 				fout_enGOfltrd.write(element_enGOfltrd + "\n")
 		fout_enGOfltrd.close()

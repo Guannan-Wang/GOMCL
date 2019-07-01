@@ -34,30 +34,33 @@ except ImportError as ErrorMessage:
 
 #####################################################################################################################################################################
 
-def go_compare(enGOfmtfltr, SI):
+def go_compare(enGOfmtfltr, enGOcol, genecol, SI):
 	"""
 	pairwise comparison for all GOs in the formatted GO list
 	enGOfmtfltr	formatted GO file
+	enGOcol	column number where GO ID is, should be integer
+	genecol	column number where genes in each GO ID are, should be integer
 	SI	similarity index, from ["JC","OC"]
 	"""
 	fin_enGOfmtfltr = open(enGOfmtfltr, "rU")
-	oriGOlist = rowtolist(enGOfmtfltr, 1, "\t", "Y")
+	oriGOlist = rowtolist(enGOfmtfltr, enGOcol, "\t", "Y")
 	enGOfmtfltr_info_dict = dict()
 	gosim_dict = dict()
 	for line_enGOfmtfltr in fin_enGOfmtfltr:
 		line_enGOfmtfltr = line_enGOfmtfltr.rstrip("\r\n")
-		if line_enGOfmtfltr.startswith("GO:") and line_enGOfmtfltr.split("\t")[0].split("GO:")[1].isdigit():
-			enGOfmtfltr_ID = line_enGOfmtfltr.split("\t")[0]
+#		if line_enGOfmtfltr.startswith("GO:") and line_enGOfmtfltr.split("\t")[0].split("GO:")[1].isdigit():
+		if line_enGOfmtfltr.split("\t")[int(enGOcol)-1].startswith("GO:") and line_enGOfmtfltr.split("\t")[int(enGOcol)-1].split("GO:")[1].isdigit():
+			enGOfmtfltr_ID = line_enGOfmtfltr.split("\t")[int(enGOcol)-1]
 			enGOfmtfltr_info_dict[enGOfmtfltr_ID] = line_enGOfmtfltr
 			gosim_dict[enGOfmtfltr_ID] = dict()
 	for element_queryGO in oriGOlist:
 		for element_subjectGO in oriGOlist:
 			if SI == "OC":
 				## A∩B/A,A∩B/B 
-				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[10].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[10].split("|"))))/float(len(enGOfmtfltr_info_dict[element_queryGO].split("\t")[10].split("|")))
+				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/float(len(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|")))
 			if SI == "JC":
 				## A∩B/A⋃B 
-				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[10].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[10].split("|"))))/float(len(set(enGOfmtfltr_info_dict[element_queryGO].split("\t")[10].split("|") + enGOfmtfltr_info_dict[element_subjectGO].split("\t")[10].split("|"))))
+				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/float(len(set(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|") + enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"))))
 	return enGOfmtfltr_info_dict, gosim_dict
 
 def go_clustering(enGOfmtfltr, SI, Ct, Inf):
@@ -70,10 +73,10 @@ def go_clustering(enGOfmtfltr, SI, Ct, Inf):
 	Inf	inflation value, main handle for cluster granularity, usually chosen somewhere in the range [1.2-5.0]
 	will think about using mcl clustering python module (it requires python 3+).
 	"""
-	enGOfmtfltr_info_dict, gosim_dict = go_compare(enGOfmtfltr, SI)
+	enGOfmtfltr_info_dict, gosim_dict = go_compare(enGOfmtfltr, 1, 0, SI) ## This is for formatted or filtered GO file where the first column is the GO ID and the last column is the genes, pay attention to the use of "0" here.
 	oriGOlist = rowtolist(enGOfmtfltr, 1, "\t", "Y")
 	
-	fin_enGOcmped = open(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.temp", "w")
+	fin_enGOcmped = open(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp", "w")
 	ProcessedPairs = []
 	for element_GO_A in oriGOlist:
 		for element_GO_B in oriGOlist:
@@ -85,13 +88,13 @@ def go_clustering(enGOfmtfltr, SI, Ct, Inf):
 					ProcessedPairs.extend([GO_PairAB,GO_PairBA])
 	fin_enGOcmped.close()
 	
-	cmd_mcl = "mcl " + str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.temp") + " --abc -I " + str(Inf) + " -o " + str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.mcl.temp")
+	cmd_mcl = "mcl " + str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp") + " --abc -I " + str(Inf) + " -o " + str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp")
 	os.system(cmd_mcl)
 	
 #	mcl_std = subprocess.Popen(["mcl", str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.temp"), "--abc", "-I", str(Inf), "-o", str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.mcl.temp")],  stdout = subprocess.PIPE,  stderr = subprocess.STDOUT)
 #	stdout,stderr = mcl_std.communicate()
 	
-	fin_mcl = open(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.mcl.temp","rU")
+	fin_mcl = open(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp","rU")
 	mclgroups = fin_mcl.readlines()
 	go_mclgroup_dict = dict()
 	gene_mclgroup_dict = dict()
@@ -101,11 +104,11 @@ def go_clustering(enGOfmtfltr, SI, Ct, Inf):
 		go_mclgroup_dict[mclgroupid] = mclgroup
 		gene_mclgroup_dict[mclgroupid] = []
 		for go_in_mclgroup in mclgroup.split("\t"):
-			gene_mclgroup_dict[mclgroupid].extend(enGOfmtfltr_info_dict[go_in_mclgroup].split("\t")[10].split("|"))
+			gene_mclgroup_dict[mclgroupid].extend(enGOfmtfltr_info_dict[go_in_mclgroup].split("\t")[-1].split("|"))
 	fin_mcl.close()
 	
-	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.temp"))
-	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.mcl.temp"))
+	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp"))
+	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp"))
 	return go_mclgroup_dict, gene_mclgroup_dict
 
 def go_assign_cluster(enGOfmtfltr, SI, Ct, Inf):
@@ -116,7 +119,7 @@ def go_assign_cluster(enGOfmtfltr, SI, Ct, Inf):
 	Ct	clustering threshold for the overlapping ratio between two GOs, any value between 0 and 1
 	Inf	inflation value, main handle for cluster granularity, usually chosen somewhere in the range [1.2-5.0]
 	"""
-#	enGOfmtfltr_info_dict, gosim_dict = go_compare(enGOfmtfltr, SI)
+#	enGOfmtfltr_info_dict, gosim_dict = go_compare(enGOfmtfltr, 1, 0, SI)
 	go_mclgroup_dict, gene_mclgroup_dict = go_clustering(enGOfmtfltr, SI, Ct, Inf)
 	
 	go_clstr_dict = dict()
