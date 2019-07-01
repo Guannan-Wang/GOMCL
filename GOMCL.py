@@ -34,12 +34,9 @@ if __name__ == "__main__":
 	parser.add_argument("-d", dest = "dswitch", help = "Only needed if depth for input GO terms is desired", action = "store_true", default = None)
 	args = parser.parse_args() 
 	
-	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
+	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize)
 	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp", "w") as fin_enGOfltrd_temp:
-		if args.dswitch:
-			fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-		else:
-			fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+		fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 		for element_enGOfltrd in enGOfltrd_list:
 			fin_enGOfltrd_temp.write(element_enGOfltrd + "\n")
 	fin_enGOfltrd_temp.close()
@@ -70,8 +67,8 @@ if __name__ == "__main__":
 	fout_clstrinfo.close()
 	
 	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", "w") as fout_clstr:
+		fout_clstr.write("Clstr" + "\t" + "Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 		if args.dswitch:
-			fout_clstr.write("Clstr" + "\t" + "Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 			try:
 				for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[7]))):
 					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
@@ -79,17 +76,44 @@ if __name__ == "__main__":
 				for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), int(enGOfmtfltr_info_dict[dict_key].split("\t")[3].split("D")[1]))):
 					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
 		else:
-			fout_clstr.write("Clstr" + "\t" + "Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[6]))):
+			for key_enGO in sorted(enGOfmtfltr_info_dict, key = lambda dict_key : (int(go_clstr_dict[dict_key]), -int(enGOfmtfltr_info_dict[dict_key].split("\t")[7]))):
 					fout_clstr.write(str(go_clstr_dict[key_enGO]) + "\t" + "\t".join(map(str,enGOfmtfltr_info_dict[key_enGO].split("\t"))) + "\n")
 	fout_clstr.close()
 	
+	
+	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstrinfo", "w") as fout_clstrinfo:
+		Accumgenelist = []
+		if args.nw:
+			go_sim_newtork = sim_newtork(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation, args.sig)
+			fout_clstrinfo.write("GO.Clstr" + "\t" + "# of GOs" + "\t" + "# of genes" + "\t" + "Accum # of genes" + "\t" + "Largest size (Description) (n/N, p-value)" + "\t" + "Smallest p-value (Description) (n/N, p-value)" + "\t" + "Most connected (Description) (n/N, p-value)" + "\n")
+			for clstrid in clstred_go_dict:
+				pvaluesortedlist = sorted(clstred_go_dict[clstrid], key = lambda element_GO : float(enGOfmtfltr_info_dict[element_GO].split("\t")[5]))
+				sizesortedlist = sorted(clstred_go_dict[clstrid], key = lambda element_GO : int(enGOfmtfltr_info_dict[element_GO].split("\t")[7]), reverse = True)
+				#minpvalueGO = min(clstred_go_dict[clstrid], key = lambda element_GO : float(enGOfmtfltr_info_dict[element_GO].split("\t")[5]))
+				#largestGO = max(clstred_go_dict[clstrid], key = lambda element_GO : int(enGOfmtfltr_info_dict[element_GO].split("\t")[7]))
+				edgesortedlist = sorted(clstred_go_dict[clstrid], key = lambda element_GO : int(dict(go_sim_newtork.degree())[element_GO]), reverse = True)
+				Accumgenelist.extend(clstred_gene_dict[clstrid])
+				
+				fout_clstrinfo.write("Ct" + str(args.cutoff) + "I" + str(args.inflation) + "_" + str(clstrid) + "\t" + str(len(set(clstred_go_dict[clstrid]))) + "\t" + str(len(set(clstred_gene_dict[clstrid]))) + "\t" + str(len(set(Accumgenelist))) + "\t" + str(sizesortedlist[0]) + " (" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[1]) + ")" + " (" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[6]) + "/" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[7]) + ", " + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[5]) + ")" + "\t" + str(pvaluesortedlist[0]) + " (" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[1]) + ")" + " (" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[6]) + "/" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[7]) + ", " + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[5]) + ")" + "\t" + str(edgesortedlist[0]) + " (" + str(enGOfmtfltr_info_dict[edgesortedlist[0]].split("\t")[1]) + ")" + " (" + str(enGOfmtfltr_info_dict[edgesortedlist[0]].split("\t")[6]) + "/" + str(enGOfmtfltr_info_dict[edgesortedlist[0]].split("\t")[7]) + ", " + str(enGOfmtfltr_info_dict[edgesortedlist[0]].split("\t")[5]) + ")"
+				+ "\n")
+		else:
+			fout_clstrinfo.write("GO.Clstr" + "\t" + "# of GOs" + "\t" + "# of genes" + "\t" + "Accum # of genes" + "\t" + "Largest size (Description) (n/N, p-value)" + "\t" + "Smallest p-value (Description) (n/N, p-value)" + "\n")
+			for clstrid in clstred_go_dict:
+				pvaluesortedlist = sorted(clstred_go_dict[clstrid], key = lambda element_GO : float(enGOfmtfltr_info_dict[element_GO].split("\t")[5]))
+				sizesortedlist = sorted(clstred_go_dict[clstrid], key = lambda element_GO : int(enGOfmtfltr_info_dict[element_GO].split("\t")[7]), reverse = True)
+				Accumgenelist.extend(clstred_gene_dict[clstrid])
+				
+				fout_clstrinfo.write("Ct" + str(args.cutoff) + "I" + str(args.inflation) + "_" + str(clstrid) + "\t" + str(len(set(clstred_go_dict[clstrid]))) + "\t" + str(len(set(clstred_gene_dict[clstrid]))) + "\t" + str(len(set(Accumgenelist))) + "\t" + str(sizesortedlist[0]) + " (" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[1]) + ")" + " (" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[6]) + "/" + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[7]) + ", " + str(enGOfmtfltr_info_dict[sizesortedlist[0]].split("\t")[5]) + ")" + "\t" + str(pvaluesortedlist[0]) + " (" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[1]) + ")" + " (" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[6]) + "/" + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[7]) + ", " + str(enGOfmtfltr_info_dict[pvaluesortedlist[0]].split("\t")[5]) + ")" + "\n")
+	fout_clstrinfo.close()
+	
+	
 	if args.hm:
 		sim_plot(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation)
+	"""	
 	if args.nw:
-		sim_newtork(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation, args.sig, args.dswitch)
-
-#	os.remove(str(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp"))
+		sim_newtork(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstr", args.simindex, args.cutoff, args.inflation, args.sig)
+	"""
+	os.remove(str(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp"))
 	
 	
 	
