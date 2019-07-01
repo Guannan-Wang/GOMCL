@@ -108,7 +108,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 						goea_go_id_depth = "D0"
 					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 				else:
-					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
+					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + "na" + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 			else:
 				print(str(goea_go_id) + " is labeled as \"obselete\" in the obo annotation file, will be skipped!")
 		else:
@@ -126,7 +126,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 							goea_go_id_depth = "D0"
 						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 					else:
-						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
+						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + "na" + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 				else:
 					print(str(goea_go_id) + " is labeled as \"obselete\" in the obo annotation file, will be skipped!")
 			else:
@@ -153,10 +153,7 @@ def goea_filter(OBOInput, goeatool, enGOraw, gosize, dswitch = False):
 	enGOfmtted_list = goea_formatter(OBOInput, goeatool, enGOraw, dswitch)
 	enGOfltrd_list = []
 	for element_enGOfmtted in enGOfmtted_list:
-		if dswitch is True:
-			go_size_ref = int(element_enGOfmtted.split("\t")[7]) # number of genes in a go term from the reference annotation.
-		else:
-			go_size_ref = int(element_enGOfmtted.split("\t")[6])
+		go_size_ref = int(element_enGOfmtted.split("\t")[7]) # number of genes in a go term from the reference annotation.
 		if go_size_ref <= int(gosize):
 			enGOfltrd_list.append(element_enGOfmtted)
 	return enGOfltrd_list
