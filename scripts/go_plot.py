@@ -60,7 +60,7 @@ def sim_plot(enGOclstr, SI, Ct, Inf):
 		plt.rcParams['axes.xmargin'] = 0
 		plt.rcParams['axes.ymargin'] = 0
 		sns.set(style = "white", font_scale = 2)
-		sorted_go_sim_matrix = pd.read_csv(os.path.splitext(enGOclstr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".simat", sep = "\t", header = 0, index_col = 0)
+		sorted_go_sim_matrix = pd.read_csv(os.path.splitext(enGOclstr)[0] + ".simat", sep = "\t", header = 0, index_col = 0)
 		sorted_go_sim_matrix = sorted_go_sim_matrix.mask(sorted_go_sim_matrix < float(Ct))
 		sns.heatmap(sorted_go_sim_matrix, vmin = float(Ct), vmax = 1.0, cmap = "Reds", xticklabels = False, yticklabels = False, cbar_kws = {'label': 'Similarity'})
 		linepos = 0
