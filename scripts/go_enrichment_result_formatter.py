@@ -79,7 +79,8 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 			else:
 				continue
 		elif str(goeatool).lower() == "gorilla":
-			if isint(line_enGOraw.split("\t")[0].split("GO:")[1]):
+#			if isint(line_enGOraw.split("\t")[0].split("GO:")[-1]):
+			if line_enGOraw.startswith("GO:"):
 				goea_go_id = str(line_enGOraw.split("\t")[0])
 				goea_go_description = str(line_enGOraw.split("\t")[1])
 				goea_go_pvalue = str(line_enGOraw.split("\t")[2])
@@ -89,6 +90,20 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 				goea_go_total_test = int(line_enGOraw.split("\t")[7])
 				goea_go_total_ref = int(line_enGOraw.split("\t")[5])
 				goea_go_geneset = str("|".join([element.split(",")[-1].strip() for element in line_enGOraw.split("\t")[9].strip("[]").split(" - ")[:-1]]))
+			else:
+				continue
+		elif str(goeatool).lower() == "agrigo":
+#			if isint(line_enGOraw.split("\t")[0].split("GO:")[-1]):
+			if line_enGOraw.startswith("GO:"):
+				goea_go_id = str(line_enGOraw.split("\t")[0])
+				goea_go_description = str(line_enGOraw.split("\t")[2])
+				goea_go_pvalue = str(line_enGOraw.split("\t")[7])
+				goea_go_adj_pvalue = str(line_enGOraw.split("\t")[8])
+				goea_go_cats_test = int(line_enGOraw.split("\t")[3])
+				goea_go_cats_ref = int(line_enGOraw.split("\t")[5])
+				goea_go_total_test = int(line_enGOraw.split("\t")[4])
+				goea_go_total_ref = int(line_enGOraw.split("\t")[6])
+				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[9].strip("// ").split(" // ")))
 			else:
 				continue
 		else:
@@ -172,10 +187,7 @@ if __name__ == "__main__":
 	if args.gosize is None:
 		print("Printing full GO list")
 		with open(os.path.splitext(args.enGO)[0] + ".enGOfmtted", "w") as fout_enGOfmtted:
-			if args.dswitch:
-				fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			else:
-				fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			fout_enGOfmtted.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 			enGOfmtted_list = goea_formatter(args.OBOInput, args.got, args.enGO, args.dswitch)
 			for element_enGOfmtted in enGOfmtted_list:
 				fout_enGOfmtted.write(element_enGOfmtted + "\n")
@@ -183,10 +195,7 @@ if __name__ == "__main__":
 	else:
 		print("Printing filtered GO list")
 		with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", "w") as fout_enGOfltrd:
-			if args.dswitch:
-				fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			else:
-				fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
+			fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 			enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
 			for element_enGOfltrd in enGOfltrd_list:
 				fout_enGOfltrd.write(element_enGOfltrd + "\n")
