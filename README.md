@@ -2,7 +2,7 @@
 a Python tool for Gene Ontology gene sets clustering
 
 ## Getting Started
-GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (Overlap coefficient) or JC (Jaccard coefficient). 
+GOMCL.py clusters GO terms using MCL based on overlapping ratios, OC (*Overlap coefficient*) or JC (*Jaccard coefficient*). 
 
 #### Use examples:
 
@@ -14,7 +14,7 @@ GOMCL.py -Ct 0.5 -I 1.5 -nw -hm OBOfile EnrichedGO
 
 #### Note:
 
-OBO file can be downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo (more explanations for obo file can be found here: http://geneontology.org/docs/download-ontology/)
+OBO file can be downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo (more explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/)
 
 ## Prerequisites
 * python 2.7
