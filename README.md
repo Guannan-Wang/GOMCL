@@ -14,8 +14,15 @@ GOMCL.py -Ct 0.5 -I 1.5 -nw -hm OBOfile EnrichedGO
 
 #### Note:
 
-OBO file can be downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo (more explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/)
+1. OBO file can be downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo (more explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/)
 
+2. GOMCL is currently compatible with BiNGO,agriGO,GOrilla,g:Profiler and customized inputs. Support for other tools will be added upon request. 
+
+3. Similarity between GO terms is calculateed either as *Jaccard Coefficient* (JC) or *Overlap Coefficient* (OC), as described in [Merico et al., 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0013984).
+
+4. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. 
+
+See -h or --help for more options
 ## Prerequisites
 * python 2.7
 
