@@ -11,7 +11,7 @@ GOMCL.py -Ct 0.5 -I 1.5 OBOfile EnrichedGO
 GOMCL.py -SI JC -Ct 0.5 -I 1.5 OBOfile EnrichedGO
 
 GOMCL.py -Ct 0.5 -I 1.5 -nw -hm OBOfile EnrichedGO
-```
+
 #### Note:
 
 1. OBO file can be downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo (more explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/)
@@ -23,7 +23,6 @@ GOMCL.py -Ct 0.5 -I 1.5 -nw -hm OBOfile EnrichedGO
 4. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. 
 
 See -h or --help for more options
-```
 
 ## Prerequisites
 * python 2.7
