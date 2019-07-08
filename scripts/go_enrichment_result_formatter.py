@@ -119,8 +119,8 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 						goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]],target = goea_go_id) - 1)
 						goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_go_id]["Namespace"]], target = goea_go_id), key = len)) - 1)
 					else:
-						goea_go_id_level = "L0"
-						goea_go_id_depth = "D0"
+						goea_go_id_level = "L00"
+						goea_go_id_depth = "D00"
 					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 				else:
 					enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + "na" + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
@@ -137,8 +137,8 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 							goea_go_id_level = "D" + "%02d" % int(nx.shortest_path_length(go_hierarchy_network,source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]],target = goea_ori_go_id) - 1)
 							goea_go_id_depth = "D" + "%02d" % int(len(max(nx.all_simple_paths(go_hierarchy_network, source = RootTerm_dict[go_hierarchy_network.nodes[goea_ori_go_id]["Namespace"]], target = goea_ori_go_id), key = len)) - 1)
 						else:
-							goea_go_id_level = "L0"
-							goea_go_id_depth = "D0"
+							goea_go_id_level = "L00"
+							goea_go_id_depth = "D00"
 						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + str(goea_go_id_depth) + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
 					else:
 						enGOfmtted_list.append(str(goea_go_id) + "\t" + str(goea_go_description) + "\t" + str(goea_go_type) + "\t" + "na" + "\t" + str(goea_go_pvalue) + "\t" + str(goea_go_adj_pvalue) + "\t" + str(goea_go_cats_test) + "\t" + str(goea_go_cats_ref) + "\t" + str(goea_go_total_test) + "\t" + str(goea_go_total_ref) + "\t" + str(goea_go_geneset))
