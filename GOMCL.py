@@ -34,7 +34,7 @@ if __name__ == "__main__":
 	parser.add_argument("-d", dest = "dswitch", help = "Only needed if depth for input GO terms is desired", action = "store_true", default = None)
 	args = parser.parse_args() 
 	
-	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize)
+	enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
 	with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".enGOfltrd.temp", "w") as fin_enGOfltrd_temp:
 		fin_enGOfltrd_temp.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
 		for element_enGOfltrd in enGOfltrd_list:
