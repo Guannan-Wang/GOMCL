@@ -42,26 +42,27 @@ GOMCL.py -Ct 0.5 -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0 OBOfile EnrichedGO
 GOMCL-sub.py -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw OBOfile ClstrGO # Cluster C1 will be further separated.
 ```
 ### Option expalanations:
+This can be accessed by -h or --help.
 #### required arguments:
 ```
-  -OBO			obo file should be provided, e.g. go-basic.obo
-  -enGO			Enriched GO input file may be from different GO enrichment analysis tools, currently supported GO enrichment tools are: BiNGO, agriGO, GOrilla, gProfiler
+  -OBO		obo file should be provided, e.g. go-basic.obo
+  -enGO		Enriched GO input file may be from different GO enrichment analysis tools, currently supported GO enrichment tools are: BiNGO, agriGO, GOrilla, gProfiler
 ```
 #### optional arguments:
 ```
-  -d			Only needed if depth for input GO terms is desired 
-  -got			GO enrichment tools used for enrichment test (default: BiNGO), 
-  -gosize		Threshold for the size of GO terms, only GO terms below this threshold will be printed out (default: 3000)
-  -gotype		Type of GO terms, only GO terms in this or these categories will be printed out 
-  -SI			Method to calculate similarity between GO terms, OC (Overlap coefficient) or JC (Jaccard coefficient) (default: OC)
-  -Ct			Clustering threshold for the overlapping ratio between two GO terms, any value between 0 and 1 (default: 0.5)
-  -I			Inflation value, main handle for cluster granularity, usually chosen somewhere in the range [1.2-5.0] (default: 1.5)
-  -Sig			Signifance level (p-value cutoff) used in the enrichment test (default: 0.05)
-  -ssd			Only needed if a similarity score distribution is desired for clusters with number of GOs larger than this threshold
-  -hg			Only needed if a hierarchy graph is desired for clusters with number of GOs larger than this threshold
-  -hgt			Only needed if a tabular output of the GO hierarchy is desired for the clusters specified by option -hg, should always be used with option -hg
-  -hm			Only needed if a similarity heatmap is desired
-  -nw			Only needed if a similarity-based network is desired
+  -d		Only needed if depth for input GO terms is desired 
+  -got		GO enrichment tools used for enrichment test (default: BiNGO), 
+  -gosize	Threshold for the size of GO terms, only GO terms below this threshold will be printed out (default: 3000)
+  -gotype	Type of GO terms, only GO terms in this or these categories will be printed out 
+  -SI		Method to calculate similarity between GO terms, OC (Overlap coefficient) or JC (Jaccard coefficient) (default: OC)
+  -Ct		Clustering threshold for the overlapping ratio between two GO terms, any value between 0 and 1 (default: 0.5)
+  -I		Inflation value, main handle for cluster granularity, usually chosen somewhere in the range [1.2-5.0] (default: 1.5)
+  -Sig		Signifance level (p-value cutoff) used in the enrichment test (default: 0.05)
+  -ssd		Only needed if a similarity score distribution is desired for clusters with number of GOs larger than this threshold
+  -hg		Only needed if a hierarchy graph is desired for clusters with number of GOs larger than this threshold
+  -hgt		Only needed if a tabular output of the GO hierarchy is desired for the clusters specified by option -hg, should always be used with option -hg
+  -hm		Only needed if a similarity heatmap is desired
+  -nw		Only needed if a similarity-based network is desired
 ```
 ### Note:
 1. GOMCL is currently compatible with BiNGO, agriGO, GOrilla, g:Profiler and customized inputs. Support for other tools will be added upon request. 
