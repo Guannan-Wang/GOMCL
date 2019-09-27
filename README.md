@@ -26,24 +26,28 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
  chmod 755 *.py scripts/*.py
  export PATH=/path/to/GOMCL-master:$PATH 
 ```
-After installation, please 
-#### Use examples:
-##### GOMCL:
+After installation, please check if GOMCL is properly installed by simply typing the following command:
+```
+GOMCL.py -h # This will print all options for GOMCL
+```
+## Ready to run GOMCL
+### Use examples:
+#### GOMCL:
 ```
 GOMCL.py -d -gosize 3500 -Ct 0.5 -I 1.5 OBOfile EnrichedGO
 GOMCL.py -Ct 0.5 -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0 OBOfile EnrichedGO
 ```
-##### GOMCL-sub:
+#### GOMCL-sub:
 ```
 GOMCL-sub.py -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw OBOfile ClstrGO # Cluster C1 will be further separated.
 ```
-#### Option expalanations:
-##### required arguments:
+### Option expalanations:
+#### required arguments:
 ```
   -OBO			obo file should be provided, e.g. go-basic.obo
   -enGO			Enriched GO input file may be from different GO enrichment analysis tools, currently supported GO enrichment tools are: BiNGO, agriGO, GOrilla, gProfiler
 ```
-##### optional arguments:
+#### optional arguments:
 ```
   -d			Only needed if depth for input GO terms is desired 
   -got			GO enrichment tools used for enrichment test (default: BiNGO), 
@@ -59,7 +63,7 @@ GOMCL-sub.py -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw OBOfile ClstrGO 
   -hm			Only needed if a similarity heatmap is desired
   -nw			Only needed if a similarity-based network is desired
 ```
-#### Note:
+### Note:
 1. GOMCL is currently compatible with BiNGO, agriGO, GOrilla, g:Profiler and customized inputs. Support for other tools will be added upon request. 
 2. Similarity between GO terms is calculated either as *Jaccard Coefficient* (JC) or *Overlap Coefficient* (OC), as described in [Merico et al., 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0013984).
 3. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. It is suggested to try different -Ct and -I values to select the best combination.
