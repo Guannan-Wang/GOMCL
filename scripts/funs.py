@@ -21,7 +21,7 @@ def isint(Num):
 		return False
 		
 def intersect(listA, listB):
-    return list(set(listA) & set(listB))
+	return list(set(listA) & set(listB))
 
 
 def rowtolist(fin, colnum, sep, header):

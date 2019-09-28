@@ -57,7 +57,8 @@ def go_compare(enGOfmtfltr, enGOcol, genecol, SI):
 		for element_subjectGO in oriGOlist:
 			if SI == "OC":
 				## A∩B/A,A∩B/B 
-				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/float(len(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|")))
+#				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/float(len(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|")))
+				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/min(float(len(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))),float(len(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"))))
 			if SI == "JC":
 				## A∩B/A⋃B 
 				gosim_dict[element_queryGO][element_subjectGO] = float(len(intersect(enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"),enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|"))))/float(len(set(enGOfmtfltr_info_dict[element_queryGO].split("\t")[int(genecol)-1].split("|") + enGOfmtfltr_info_dict[element_subjectGO].split("\t")[int(genecol)-1].split("|"))))
@@ -76,25 +77,27 @@ def go_clustering(enGOfmtfltr, SI, Ct, Inf):
 	enGOfmtfltr_info_dict, gosim_dict = go_compare(enGOfmtfltr, 1, 0, SI) ## This is for formatted or filtered GO file where the first column is the GO ID and the last column is the genes, pay attention to the use of "0" here.
 	oriGOlist = rowtolist(enGOfmtfltr, 1, "\t", "Y")
 	
-	fin_enGOcmped = open(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp", "w")
+	fin_enGOcmped = open(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp", "w")
 	ProcessedPairs = []
 	for element_GO_A in oriGOlist:
 		for element_GO_B in oriGOlist:
 			GO_PairAB = str(element_GO_A) + "_" + str(element_GO_B)
 			GO_PairBA = str(element_GO_B) + "_" + str(element_GO_A)
 			if GO_PairAB not in ProcessedPairs:
-				if max(gosim_dict[element_GO_A][element_GO_B],gosim_dict[element_GO_B][element_GO_A]) >= float(Ct):
-					fin_enGOcmped.write(str(element_GO_A) + "\t" + str(element_GO_B) + "\t" + str(max(gosim_dict[element_GO_A][element_GO_B],gosim_dict[element_GO_B][element_GO_A])) + "\n")
+#				if max(gosim_dict[element_GO_A][element_GO_B],gosim_dict[element_GO_B][element_GO_A]) >= float(Ct):
+#					fin_enGOcmped.write(str(element_GO_A) + "\t" + str(element_GO_B) + "\t" + str(max(gosim_dict[element_GO_A][element_GO_B],gosim_dict[element_GO_B][element_GO_A])) + "\n")
+				if float(gosim_dict[element_GO_A][element_GO_B]) >= float(Ct):
+					fin_enGOcmped.write(str(element_GO_A) + "\t" + str(element_GO_B) + "\t" + str(gosim_dict[element_GO_A][element_GO_B]) + "\n")
 					ProcessedPairs.extend([GO_PairAB,GO_PairBA])
 	fin_enGOcmped.close()
 	
-	cmd_mcl = "mcl " + str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp") + " --abc -I " + str(Inf) + " -o " + str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp")
+	cmd_mcl = "mcl " + str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp") + " --abc -I " + str(Inf) + " -o " + str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp")
 	os.system(cmd_mcl)
 	
-#	mcl_std = subprocess.Popen(["mcl", str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.temp"), "--abc", "-I", str(Inf), "-o", str(os.path.splitext(enGOfmtfltr)[0] + ".enGOcmped.mcl.temp")],  stdout = subprocess.PIPE,  stderr = subprocess.STDOUT)
+#	mcl_std = subprocess.Popen(["mcl", str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + ".enGOcmped.temp"), "--abc", "-I", str(Inf), "-o", str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + ".enGOcmped.mcl.temp")],  stdout = subprocess.PIPE,  stderr = subprocess.STDOUT)
 #	stdout,stderr = mcl_std.communicate()
 	
-	fin_mcl = open(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp","rU")
+	fin_mcl = open(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp","rU")
 	mclgroups = fin_mcl.readlines()
 	go_mclgroup_dict = dict()
 	gene_mclgroup_dict = dict()
@@ -107,8 +110,8 @@ def go_clustering(enGOfmtfltr, SI, Ct, Inf):
 			gene_mclgroup_dict[mclgroupid].extend(enGOfmtfltr_info_dict[go_in_mclgroup].split("\t")[-1].split("|"))
 	fin_mcl.close()
 	
-	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp"))
-	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp"))
+	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.temp"))
+	os.remove(str(os.path.splitext(enGOfmtfltr)[0] + "_" + str(SI) + "_Ct" + str(Ct) + "I" + str(Inf) + ".enGOcmped.mcl.temp"))
 	return go_mclgroup_dict, gene_mclgroup_dict
 
 def go_assign_cluster(enGOfmtfltr, SI, Ct, Inf):
@@ -160,7 +163,7 @@ if __name__ == "__main__":
 	
 	go_clstr_dict, gene_clstr_dict, clstred_go_dict, clstred_gene_dict = go_assign_cluster(args.enGOfmtfltr, args.simindex, args.cutoff, args.inflation)
 
-	with open(os.path.splitext(args.enGOfmtfltr)[0] + ".clstrinfo", "w") as fout_clstrinfo:
+	with open(os.path.splitext(args.enGOfmtfltr)[0] + "_GOsize" + str(args.gosize) + "_" + str(args.simindex) + "_Ct" + str(args.cutoff) + "I" + str(args.inflation) + ".clstrinfo", "w") as fout_clstrinfo:
 		fout_clstrinfo.write("GO.Clstr" + "\t" + "# of GOs" + "\t" + "# of genes" + "\n")
 		for clstrid in clstred_go_dict:
-			fout_clstrinfo.write("Ct" + str(args.cutoff) + "I" + str(args.inflation) + "_" + str(clstrid) + "\t" + str(len(set(clstred_go_dict[clstrid]))) + "\t" + str(len(set(clstred_gene_dict[clstrid]))) + "\n")	
+			fout_clstrinfo.write(str(args.simindex) + "Ct" + str(args.cutoff) + "I" + str(args.inflation) + "_" + str(clstrid) + "\t" + str(len(set(clstred_go_dict[clstrid]))) + "\t" + str(len(set(clstred_gene_dict[clstrid]))) + "\n")	

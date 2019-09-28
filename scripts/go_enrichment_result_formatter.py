@@ -155,7 +155,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 
 	return enGOfmtted_list
 
-def goea_filter(OBOInput, goeatool, enGOraw, gosize, dswitch = False):
+def goea_filter(OBOInput, goeatool, enGOraw, gosize, gotype, dswitch = False):
 	"""
 	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler, Enrichr
 	Required:
@@ -163,13 +163,15 @@ def goea_filter(OBOInput, goeatool, enGOraw, gosize, dswitch = False):
 	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler, Enrichr]
 	enGOraw	the enrichment test reults from the go enrichment tool used
 	gosize	threshold for the size of GO terms, only GO terms below this threshold will be printed out
+	gotype  "BP","CC","MF" which category to use
 	dswitch switch for depth ON and OFF
 	"""
 	enGOfmtted_list = goea_formatter(OBOInput, goeatool, enGOraw, dswitch)
 	enGOfltrd_list = []
 	for element_enGOfmtted in enGOfmtted_list:
+		go_type = str(element_enGOfmtted.split("\t")[2])
 		go_size_ref = int(element_enGOfmtted.split("\t")[7]) # number of genes in a go term from the reference annotation.
-		if go_size_ref <= int(gosize):
+		if go_type in gotype and go_size_ref <= int(gosize):
 			enGOfltrd_list.append(element_enGOfmtted)
 	return enGOfltrd_list
 		
@@ -177,9 +179,10 @@ def goea_filter(OBOInput, goeatool, enGOraw, gosize, dswitch = False):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description = synopsis, formatter_class = argparse.RawTextHelpFormatter)
 	parser.add_argument("OBOInput", metavar = "-OBOInput", help = "OBO file from Gene Ontology", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## Cannot specify 'dest' for positional arguments
-	parser.add_argument("enGO", metavar = "-enGO", help = "Enriched GO input file may be from different GO enrichment analysis tools (e.g. BiNGO, agriGO, AmiGO, etc..", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## See below.
+	parser.add_argument("enGO", metavar = "-enGO", help = "Enriched GO input file may be from different GO enrichment analysis tools (e.g. BiNGO, agriGO, AmiGO, etc..)", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## See below.
 	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "AmiGO", "PANTHER", "GOrilla", "gProfiler", "Enrichr"]) ## See below.
 	parser.add_argument("-gosize", metavar = None, dest = None, help = "Threshold for the size of GO terms, only GO terms below this threshold will be printed out", action = "store", nargs = None, const = None, default = None, type = int, choices = None)
+	parser.add_argument("-gotype", metavar = None, dest = None, help = "Type of GO terms, only GO terms in this or these categories will be printed out", action = "store", nargs = "*", const = None, default = "BP", type = None, choices = None)
 	parser.add_argument("-d", dest = "dswitch", help = "Calculate depth for input GO terms", action = "store_true", default = None) ## Argument present --> true, not present --> false. The followings are not compatible with "store_true": metavar = None, nargs = None,const = None, type = None, choices = None
 	args = parser.parse_args() 
 #	print(args.OBOInput, args.got, args.enGO, args.gosize)
@@ -196,7 +199,7 @@ if __name__ == "__main__":
 		print("Printing filtered GO list")
 		with open(os.path.splitext(args.enGO)[0] + "_GOsize" + str(args.gosize) + ".enGOfltrd", "w") as fout_enGOfltrd:
 			fout_enGOfltrd.write("Full GO-ID" + "\t" + "Description" + "\t" + "Type" + "\t" + "Depth" + "\t" + "p-value" + "\t" + "adj p-value" + "\t" + "x.cats.test" + "\t" + "n.cats.ref" + "\t" + "X.total.test" + "\t" + "N.total.ref" + "\t" + "Genes in test set" + "\n")
-			enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.dswitch)
+			enGOfltrd_list = goea_filter(args.OBOInput, args.got, args.enGO, args.gosize, args.gotype, args.dswitch)
 			for element_enGOfltrd in enGOfltrd_list:
 				fout_enGOfltrd.write(element_enGOfltrd + "\n")
 		fout_enGOfltrd.close()

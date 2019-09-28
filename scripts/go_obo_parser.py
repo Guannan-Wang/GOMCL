@@ -60,8 +60,8 @@ def construct_go_hierarchy_digraph(OBOInput):
 	for go_id in go_name_dict:
 		if go_is_obsolete_dict[go_id] <> "true":
 			go_hierarchy_digraph.add_node(go_id, Name = go_name_dict[go_id], Namespace = go_namespace_dict[go_id], AltID = alt_id_dict[go_id], IsA = go_is_a_dict[go_id], Relationship = go_relationship_dict[go_id])
-#			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in itertools.chain(go_is_a_dict[go_id],go_relationship_dict[go_id])]) ## This reads the GO terms with any type of relationships, besides "is_a", into the network.
-			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in go_is_a_dict[go_id]], weight = 1)
+			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in itertools.chain(go_is_a_dict[go_id], go_relationship_dict[go_id])], weight = 1) ## This reads the GO terms with following relationships into the network: "is_a" and "part_of".
+#			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in go_is_a_dict[go_id]], weight = 1)
 	return go_hierarchy_digraph
 
 
