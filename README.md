@@ -35,8 +35,8 @@ GOMCL.py -h # This will print all options for GOMCL
 ### Use examples:
 #### GOMCL:
 ```
-GOMCL.py -d -gosize 3500 -Ct 0.5 -I 1.5 OBOfile EnrichedGO
-GOMCL.py -Ct 0.5 -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0 OBOfile EnrichedGO
+GOMCL.py OBOfile EnrichedGO -d -gosize 3500 -Ct 0.5 -I 1.5 
+GOMCL.py OBOfile EnrichedGO -Ct 0.5 -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0 
 ```
 #### GOMCL-sub:
 ```
