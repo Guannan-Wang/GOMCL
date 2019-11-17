@@ -40,7 +40,7 @@ GOMCL.py OBOfile EnrichedGO -Ct 0.5 -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0
 ```
 #### GOMCL-sub:
 ```
-GOMCL-sub.py -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw OBOfile ClstrGO # Cluster C1 will be further separated.
+GOMCL-sub.py OBOfile ClstrGO -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw # Cluster C1 will be further separated.
 ```
 ### Option expalanations:
 This can be accessed by -h or --help.
