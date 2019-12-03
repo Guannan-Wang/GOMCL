@@ -75,11 +75,11 @@ This can be accessed by -h or --help.
  cd GOMCL-master/tests
  wget http://purl.obolibrary.org/obo/go/go-basic.obo
 ```
-2. Run GOMCL
+2. Run GOMCL test.
 ```
 GOMCL.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.bgo -gosize 3500 -gotype BP CC -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0
 ```
-3. Run GOMCL-sub
+3. Run GOMCL-sub test.
 ```
 GOMCL-sub.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.clstr -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw
 ```
