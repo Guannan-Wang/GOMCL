@@ -29,7 +29,9 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
 ```
 After installation, please check if GOMCL is properly installed by simply typing the following command:
 ```
-GOMCL.py -h # This will print all options for GOMCL
+GOMCL.py -h
+GOMCL-sub.py -h
+# This will print all options for GOMCL and GOMCL-sub
 ```
 ## Ready to run GOMCL
 ### Use examples:
