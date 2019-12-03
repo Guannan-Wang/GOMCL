@@ -70,4 +70,17 @@ This can be accessed by -h or --help.
 2. Similarity between GO terms is calculated either as *Jaccard Coefficient* (JC) or *Overlap Coefficient* (OC), as described in [Merico et al., 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0013984).
 3. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. It is suggested to try different -Ct and -I values to select the best combination.
 ## Running the test
-Will be available soon
+1. Download the obo file from Gene Ontology.
+```
+ cd GOMCL-master/tests
+ wget http://purl.obolibrary.org/obo/go/go-basic.obo
+```
+2. Run GOMCL
+```
+GOMCL.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.bgo -gosize 3500 -gotype BP CC -I 1.5 -hm -nw -d -hg 0 -hgt -ssd 0
+```
+3. Run GOMCL-sub
+```
+GOMCL-sub.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.clstr -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw
+```
+The resulting files and figures will be in GOMCL-master/tests.
