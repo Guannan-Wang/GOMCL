@@ -14,7 +14,7 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
   - [pandas](https://pandas.pydata.org/)
 * [MCL](https://micans.org/mcl/) - other clustering methods will be added in the future
   - MCL can also be downloaded from https://www.micans.org/mcl/src/ or https://github.com/JohannesBuchner/mcl
-  - MCL should be added to the running environment. The user can use "mcl -h" to check whether MCL is loaded into the running environment. 
+  - **MCL should be added to the running environment**. The user can use "mcl -h" to check whether MCL is loaded into the running environment. 
 ## Prerequisites - input data
 * An obo annotation file is required, and can be downloaded downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo 
   - More explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/
