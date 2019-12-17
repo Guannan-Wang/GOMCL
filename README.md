@@ -71,7 +71,9 @@ This can be accessed by -h or --help.
 1. GOMCL is currently compatible with BiNGO, agriGO, GOrilla, g:Profiler and customized inputs. Support for other tools will be added upon request. 
 2. Similarity between GO terms is calculated either as *Jaccard Coefficient* (JC) or *Overlap Coefficient* (OC), as described in [Merico et al., 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0013984).
 3. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. It is suggested to try different -Ct and -I values to select the best combination.
-4. The current color scheme for the top 10 clusters generated from GOMCL is as below: <img src="https://user-images.githubusercontent.com/50833638/71024983-bc6e0c00-20cb-11ea-9d29-64b56108f19d.png" height="50%" width="50%">
+4. The current color scheme for the top 10 clusters generated from GOMCL is as below, customizable color scheme will be available in future versions.
+<img src="https://user-images.githubusercontent.com/50833638/71024983-bc6e0c00-20cb-11ea-9d29-64b56108f19d.png" height="50%" width="50%">
+
 ## Running the test
 1. Download the obo file from Gene Ontology.
 ```
