@@ -74,6 +74,8 @@ This can be accessed by -h or --help.
 4. The current color scheme for the top 10 clusters generated from GOMCL is as below, customizable color scheme will be available in future versions.
 <img src="https://user-images.githubusercontent.com/50833638/71024983-bc6e0c00-20cb-11ea-9d29-64b56108f19d.png" height="50%" width="50%">
 
+5. **If desired, users can create, edit the simiarity networks using [Cytoscape](https://cytoscape.org/)**. A tutorial for network edit and manipulation will come soon.
+
 ## Running the test
 1. Download the obo file from Gene Ontology.
 ```
