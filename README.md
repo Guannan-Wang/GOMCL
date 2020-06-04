@@ -120,5 +120,5 @@ The resulting files and figures will be in GOMCL-master/tests.
   <img src="images/Cytoscape-3-Network%20Customization.png" height="40%" width="40%">
 </p>
 
-### To cite
+## To cite
 Wang, G., Oh, D. & Dassanayake, M. GOMCL: a toolkit to cluster, evaluate, and extract non-redundant associations of Gene Ontology-based functions. *BMC Bioinformatics* 21, 139 (2020). [https://doi.org/10.1186/s12859-020-3447-4](https://doi.org/10.1186/s12859-020-3447-4)
