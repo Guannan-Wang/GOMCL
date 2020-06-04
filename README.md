@@ -14,7 +14,8 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
   - [pandas](https://pandas.pydata.org/)
 * [MCL](https://micans.org/mcl/) - other clustering methods will be added in the future
   - MCL can also be downloaded from https://www.micans.org/mcl/src/ or https://github.com/JohannesBuchner/mcl
-  - **MCL should be added to the running environment**. The user can use "mcl -h" to check whether MCL is loaded into the running environment. 
+  - **MCL should be added to the running environment**. The user can use "mcl -h" to check whether MCL is loaded into the running environment.
+  - for windows users, please install [Cygwin](https://www.cygwin.com/) for mcl, refer to details at [micans](https://micans.org/mcl/man/mclfaq.html#faq1.6).
 ## Prerequisites - input data
 * An obo annotation file is required, and can be downloaded downloaded from http://purl.obolibrary.org/obo/go.obo or http://purl.obolibrary.org/obo/go/go-basic.obo 
   - More explanations for obo files can be found here: http://geneontology.org/docs/download-ontology/
@@ -72,9 +73,16 @@ This can be accessed by -h or --help.
 2. Similarity between GO terms is calculated either as *Jaccard Coefficient* (JC) or *Overlap Coefficient* (OC), as described in [Merico et al., 2010](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0013984).
 3. The use of -Ct and -I values heavily depends on the number of input GO terms and how similar they are. It is suggested to try different -Ct and -I values to select the best combination.
 4. The current color scheme for the top 10 clusters generated from GOMCL is as below, customizable color scheme will be available in future versions.
-<img src="https://user-images.githubusercontent.com/50833638/71024983-bc6e0c00-20cb-11ea-9d29-64b56108f19d.png" height="50%" width="50%">
 
-5. **If desired, users can create, edit the simiarity networks using [Cytoscape](https://cytoscape.org/)**. A tutorial for network edit and manipulation will come soon.
+<p align="center">
+  <img src="images/GOMCL%20Color%20Scheme.png" height="50%" width="50%">
+</p>
+
+```
+In case needed, hex codes for these colors are as following (from cluster 1 to 10): "#FF4136","#0074D9","#9F54E8","#F1C61C","#A5014F","#005884","#54A883","#6F7300","#FF851B","#00FF00"
+```
+
+5. **If desired, users can create, edit the simiarity networks using [Cytoscape](https://cytoscape.org/)**. A brief tutorial for network edit and manipulation in Cytoscape is posted below.
 
 ## Running the test
 1. Download the obo file from Gene Ontology.
@@ -91,3 +99,22 @@ GOMCL.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.bgo -gosize 3500 -gotype 
 GOMCL-sub.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.clstr -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw
 ```
 The resulting files and figures will be in GOMCL-master/tests.
+
+## GOMCL to Cytoscape
+1. Open Cytoscape-->File-->Import-->Network from Table..., select the .simfltred file (e.g. “Wendrich_PNAS_SD2_LR_TMO5_H_vs_L_GOsize3500_OC_Ct0.5I1.5.simfltred” in the output of the test). Change the header correspondingly.
+
+<p align="center">
+  <img src="images/Cytoscape-1-Import%20Network%20from%20Table....png" height="80%" width="80%">
+</p>
+
+2. File-->Import-->Table from File…, select .clstr file (e.g. “Wendrich_PNAS_SD2_LR_TMO5_H_vs_L_GOsize3500_OC_Ct0.5I1.5.clstr” in the output of the test). Change “Where to Import Table Data” to “To selected networks only”, select the imported network collection, and make “Full GO-ID” as the key.
+
+<p align="center">
+  <img src="images/Cytoscape-2-Import%20Table%20from%20File....png" height="80%" width="80%">
+</p>
+
+3. Now the GO network and node information are imported. You can go to “Style” on the left panel, and customize the color/size/transparency of each node based on clusters,  color/size/transparency of edges, etc. to your preference. 
+
+<p align="center">
+  <img src="images/Cytoscape-3-Network%20Customization.png" height="40%" width="40%">
+</p>
