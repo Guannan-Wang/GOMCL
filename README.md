@@ -1,4 +1,5 @@
 # GOMCL
+[<img src="images/GOMCL%20DOI%20Badge.png" height="25%" width="25%">](https://doi.org/10.1186/s12859-020-3447-4)
 ## Overview
 GOMCL is a tool to cluster and extract summarized associations of Gene Ontology based functions in omics data. It clusters GO terms using MCL based on overlapping ratios, OC (*Overlap coefficient*) or JC (*Jaccard coefficient*). The resulting clusters can be further analyzed and separated into sub-clusters using a second script, GOMCL-sub. This tool helps researchers to reduce time spent on manual curation of large lists of GO terms and minimize biases introduced by shared GO terms in data interpretation. 
 
@@ -82,7 +83,7 @@ This can be accessed by -h or --help.
 In case needed, hex codes for these colors are as following (from cluster 1 to 10): "#FF4136","#0074D9","#9F54E8","#F1C61C","#A5014F","#005884","#54A883","#6F7300","#FF851B","#00FF00"
 ```
 
-5. **If desired, users can create, edit the simiarity networks using [Cytoscape](https://cytoscape.org/)**. A brief tutorial for network edit and manipulation in Cytoscape is posted below.
+5. **If desired, users can create, edit the simiarity networks using [Cytoscape](https://cytoscape.org/)**. A brief tutorial for network editing and manipulation in Cytoscape is posted below.
 
 ## Running the test
 1. Download the obo file from Gene Ontology.
@@ -118,3 +119,6 @@ The resulting files and figures will be in GOMCL-master/tests.
 <p align="center">
   <img src="images/Cytoscape-3-Network%20Customization.png" height="40%" width="40%">
 </p>
+
+### To cite
+Wang, G., Oh, D. & Dassanayake, M. GOMCL: a toolkit to cluster, evaluate, and extract non-redundant associations of Gene Ontology-based functions. *BMC Bioinformatics* 21, 139 (2020). [https://doi.org/10.1186/s12859-020-3447-4](https://doi.org/10.1186/s12859-020-3447-4)
