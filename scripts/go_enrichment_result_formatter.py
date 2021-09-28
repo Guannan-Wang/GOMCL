@@ -106,6 +106,19 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[9].strip("// ").split(" // ")))
 			else:
 				continue
+		if str(goeatool).lower() == "goatools":
+			if len(line_enGOraw.split("\t")) > 0 and line_enGOraw.split("\t")[0].strip(".").startswith("GO:"):
+				goea_go_id = line_enGOraw.split("\t")[0].strip(".")
+				goea_go_description = str(line_enGOraw.split("\t")[3])
+				goea_go_pvalue = str(line_enGOraw.split("\t")[6])
+				goea_go_adj_pvalue = str(line_enGOraw.split("\t")[9])
+				goea_go_cats_test = int(line_enGOraw.split("\t")[4].split("/")[0])
+				goea_go_cats_ref = int(line_enGOraw.split("\t")[5].split("/")[0])
+				goea_go_total_test = int(line_enGOraw.split("\t")[4].split("/")[1])
+				goea_go_total_ref = int(line_enGOraw.split("\t")[5].split("/")[1])
+				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[10].split(", ")))
+			else:
+				continue
 		else:
 			print("The provided tool is currently not supported!") 
 			break
