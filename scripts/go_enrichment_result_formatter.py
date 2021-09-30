@@ -106,7 +106,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[9].strip("// ").split(" // ")))
 			else:
 				continue
-		if str(goeatool).lower() == "goatools":
+		elif str(goeatool).lower() == "goatools":
 			if len(line_enGOraw.split("\t")) > 0 and line_enGOraw.split("\t")[0].strip(".").startswith("GO:"):
 				goea_go_id = line_enGOraw.split("\t")[0].strip(".")
 				goea_go_description = str(line_enGOraw.split("\t")[3])
