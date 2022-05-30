@@ -35,6 +35,16 @@ GOMCL.py -h
 GOMCL-sub.py -h
 # This will print all options for GOMCL and GOMCL-sub
 ```
+## Updates
+- 2022-05-30 Added a function to take customized inputs in ```go_enrichment_result_formatter.py```. A minimum of two columns are required: the first column contains GO IDs; the second column contains gene ids (separated by "|"). An example of a customized input is given below.
+
+  |    GO-ID    | Genes in test set |
+  | ----------- | ------------- |
+  | GO:0000001  | gene1\|gene2\|gene3\|gene4\|gene5 |
+  | GO:0000002  | gene6\|gene7\|gene8\|gene9\|gene10 |
+  | GO:0000003  | gene11\|gene12\|gene13\|gene14\|gene15 |
+
+
 ## Ready to run GOMCL
 ### Use examples:
 #### GOMCL:
