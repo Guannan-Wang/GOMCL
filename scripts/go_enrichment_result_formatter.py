@@ -27,10 +27,10 @@ synopsis = "\n\
 
 def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 	"""
-	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler, Enrichr
+	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler
 	Required:
 	OBOInput	obo file should be provided, e.g. go-basic.obo
-	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler, Enrichr]
+	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler]
 	enGOraw	the enrichment test reults from the go enrichment tool used
 	dswitch switch for depth ON and OFF
 	"""
@@ -117,6 +117,19 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 				goea_go_total_test = int(line_enGOraw.split("\t")[4].split("/")[1])
 				goea_go_total_ref = int(line_enGOraw.split("\t")[5].split("/")[1])
 				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[10].split(", ")))
+			else:
+				continue
+		elif str(goeatool).lower() == "generic":
+			if len(line_enGOraw.split("\t")) > 1 and line_enGOraw.startswith("GO:"):
+				goea_go_id = str(line_enGOraw.split("\t")[0])
+				goea_go_description = "na"
+				goea_go_pvalue = 0
+				goea_go_adj_pvalue = 0
+				goea_go_cats_test = 0
+				goea_go_cats_ref = 0
+				goea_go_total_test = 0
+				goea_go_total_ref = 0
+				goea_go_geneset = str(line_enGOraw.split("\t")[1])
 			else:
 				continue
 		else:
