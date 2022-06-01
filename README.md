@@ -98,7 +98,7 @@ In case needed, hex codes for these colors are as following (from cluster 1 to 1
 ## Running the test
 1. Download the obo file from Gene Ontology.
 ```
- cd GOMCL-master/tests
+ cd GOMCL-py3/tests
  wget http://purl.obolibrary.org/obo/go/go-basic.obo
 ```
 2. Run GOMCL test.
@@ -109,7 +109,7 @@ GOMCL.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.bgo -gosize 3500 -gotype 
 ```
 GOMCL-sub.py go-basic.obo Wendrich_PNAS_SD2_LR_TMO5_H_vs_L.clstr -C 1 -gosize 2000 -I 1.8 -ssd 0 -hg 0 -hgt -hm -nw
 ```
-The resulting files and figures will be in GOMCL-master/tests.
+The resulting files and figures will be in GOMCL-py3/tests.
 
 ## GOMCL to Cytoscape
 1. Open Cytoscape-->File-->Import-->Network from Table..., select the .simfltred file (e.g. “Wendrich_PNAS_SD2_LR_TMO5_H_vs_L_GOsize3500_OC_Ct0.5I1.5.simfltred” in the output of the test). Change the header correspondingly.
