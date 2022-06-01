@@ -6,7 +6,7 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
 ---
 ## Getting Started
 ## Prerequisites - programs
-* python 2.7
+* GOMCL-py3 will work with python3
 * python libraries: 
   - [networkx](https://networkx.github.io/)
   - [matplotlib](https://matplotlib.org/)
