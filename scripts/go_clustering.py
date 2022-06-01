@@ -11,7 +11,7 @@ from collections import OrderedDict
 import numpy as np
 import pandas as pd
 import math
-from funs import *
+from .funs import *
 
 try:
 	import networkx as nx

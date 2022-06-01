@@ -14,8 +14,8 @@ except ImportError as ErrorMessage:
 	print(str(ErrorMessage))
 	sys.exit()
 
-from go_obo_parser import obo_parser, construct_go_hierarchy_digraph
-from funs import *
+from .go_obo_parser import obo_parser, construct_go_hierarchy_digraph
+from .funs import *
 
 synopsis = "\n\
 #############################################################################################################################################\n\
@@ -30,7 +30,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 	gene ontology enrichment analysis (goea) result formatter, supporting BiNGO, agriGO, AmiGO, PANTHER, GOrilla, gProfiler
 	Required:
 	OBOInput	obo file should be provided, e.g. go-basic.obo
-	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler]
+	goeatool	the go enrichment tools used: [BiNGO, agriGO, AmiGO, PANTHER,GOrilla, gProfiler, Enrichr]
 	enGOraw	the enrichment test reults from the go enrichment tool used
 	dswitch switch for depth ON and OFF
 	"""
@@ -138,7 +138,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 			
 		## Determine the level and depth of each GO term in the input
 		if goea_go_id in obo_go_name_dict:
-			if obo_go_is_obsolete_dict[goea_go_id] <> "true":
+			if obo_go_is_obsolete_dict[goea_go_id] != "true":
 				goea_go_type = "BP" if obo_go_namespace_dict[goea_go_id] == "biological_process" else "MF" if obo_go_namespace_dict[goea_go_id] == "molecular_function" else "CC" if obo_go_namespace_dict[goea_go_id] == "cellular_component" else ""
 				if dswitch is True:
 					if goea_go_id not in RootTerm_dict.values():
@@ -156,7 +156,7 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 			goea_ori_go_id_list = [key_go_id for key_go_id in obo_go_alt_id_dict if goea_go_id in obo_go_alt_id_dict[key_go_id]]
 			if len(goea_ori_go_id_list) > 0:
 				goea_ori_go_id = goea_ori_go_id_list[0]
-				if obo_go_is_obsolete_dict[goea_ori_go_id] <> "true":
+				if obo_go_is_obsolete_dict[goea_ori_go_id] != "true":
 					goea_go_type = "BP" if obo_go_namespace_dict[goea_ori_go_id] == "biological_process" else "MF" if obo_go_namespace_dict[goea_ori_go_id] == "molecular_function" else "CC" if obo_go_namespace_dict[goea_ori_go_id] == "cellular_component" else ""
 					if dswitch is True:
 						if goea_ori_go_id not in RootTerm_dict.values():
@@ -206,7 +206,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description = synopsis, formatter_class = argparse.RawTextHelpFormatter)
 	parser.add_argument("OBOInput", metavar = "-OBOInput", help = "OBO file from Gene Ontology", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## Cannot specify 'dest' for positional arguments
 	parser.add_argument("enGO", metavar = "-enGO", help = "Enriched GO input file may be from different GO enrichment analysis tools (e.g. BiNGO, agriGO, AmiGO, etc..)", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## See below.
-	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "AmiGO", "PANTHER", "GOrilla", "gProfiler", "Enrichr", "GOATOOLS"]) ## See below.
+	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "AmiGO", "PANTHER", "GOrilla", "gProfiler", "GOATOOLS"]) ## See below.
 	parser.add_argument("-gosize", metavar = None, dest = None, help = "Threshold for the size of GO terms, only GO terms below this threshold will be printed out", action = "store", nargs = None, const = None, default = None, type = int, choices = None)
 	parser.add_argument("-gotype", metavar = None, dest = None, help = "Type of GO terms, only GO terms in this or these categories will be printed out", action = "store", nargs = "*", const = None, default = "BP", type = None, choices = None)
 	parser.add_argument("-d", dest = "dswitch", help = "Calculate depth for input GO terms", action = "store_true", default = None) ## Argument present --> true, not present --> false. The followings are not compatible with "store_true": metavar = None, nargs = None,const = None, type = None, choices = None

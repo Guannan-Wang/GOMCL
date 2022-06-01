@@ -74,5 +74,6 @@ def colalpha(hexcode, alpha):
 	"""
 	rgbcode = tuple(int(hexcode.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
 	rgbcode = tuple(255 - alpha * (255 - primary) for primary in rgbcode)
+	rgbcode = tuple(int(x) for x in rgbcode)
 	hexcode = '#%02x%02x%02x' % rgbcode
 	return hexcode

@@ -26,7 +26,7 @@ def obo_parser(OBOInput):
 	obo_go_relationship_dict = defaultdict(list)
 	obo_go_def_dict = defaultdict(list)
 	obo_comment_dict = defaultdict(list)
-	for linenum_obo in xrange(len(lines_obo)):
+	for linenum_obo in range(len(lines_obo)):
 		if lines_obo[linenum_obo].strip() == "[Term]":
 #			obo_go_numID = int(lines_obo[linenum_obo + 1].strip().split("id: GO:")[1])
 			obo_go_id = lines_obo[linenum_obo + 1].strip().split("id: ")[1].strip()
@@ -58,7 +58,7 @@ def construct_go_hierarchy_digraph(OBOInput):
 	go_name_dict, go_namespace_dict, alt_id_dict, go_is_obsolete_dict, go_is_a_dict, go_relationship_dict = obo_parser(OBOInput)
 	go_hierarchy_digraph = nx.DiGraph()
 	for go_id in go_name_dict:
-		if go_is_obsolete_dict[go_id] <> "true":
+		if go_is_obsolete_dict[go_id] != "true":
 			go_hierarchy_digraph.add_node(go_id, Name = go_name_dict[go_id], Namespace = go_namespace_dict[go_id], AltID = alt_id_dict[go_id], IsA = go_is_a_dict[go_id], Relationship = go_relationship_dict[go_id])
 			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in itertools.chain(go_is_a_dict[go_id], go_relationship_dict[go_id])], weight = 1) ## This reads the GO terms with following relationships into the network: "is_a" and "part_of".
 #			go_hierarchy_digraph.add_edges_from([(parent_go_id,go_id) for parent_go_id in go_is_a_dict[go_id]], weight = 1)

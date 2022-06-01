@@ -12,9 +12,9 @@ import numpy as np
 import pandas as pd
 import math
 import random
-from go_obo_parser import *
-from go_clustering import *
-from funs import *
+from .go_obo_parser import *
+from .go_clustering import *
+from .funs import *
 
 try:
 	import networkx as nx
@@ -95,7 +95,8 @@ def sim_density(simlist, SI, increment = 0.02):
 		plt.rcParams['axes.ymargin'] = 0
 		sns.set(style = "white", font_scale = 2)
 		binlist = np.arange(0.0, 1.02, float(increment))
-		sim_density_plot = sns.distplot(simlist, hist = True, kde = False, norm_hist = False, bins = binlist, color = 'blue', hist_kws = {"edgecolor": "black", "alpha": 0.5}, kde_kws = {"color": "white", "alpha": 0})
+#		sim_density_plot = sns.distplot(simlist, hist = True, kde = False, norm_hist = False, bins = binlist, color = 'blue', hist_kws = {"edgecolor": "black", "alpha": 0.5}, kde_kws = {"color": "white", "alpha": 0})
+		sim_density_plot = sns.histplot(simlist, kde = False, bins = binlist, common_norm = True, color = 'blue', edgecolor = "black", alpha = 0.5, cumulative = False, line_kws = {"color": "white", "alpha": 0})
 		plt.xlim(-0.02, 1.02)
 		plt.xlabel('Similarity Index (' + str(SI) + ')', fontsize = 18)
 #		plt.xlabel("Similarity Index ({0}), P(>={1}): {2:.2%}".format(SI, Ct, len([sim for sim in simlist if float(Ct) >= 0.5])/float(len(simlist))), fontsize = 18)
@@ -114,7 +115,8 @@ def sim_cumulative(simlist, SI, Ct, increment = 0.02):
 		plt.rcParams["axes.labelsize"] = 22
 		sns.set(style = "white", font_scale = 2)
 		binlist = np.arange(0.0, 1.02, float(increment))
-		sim_cumulative_plot = sns.distplot(simlist, hist = True, kde = False, norm_hist = True, bins = binlist, color = 'blue', hist_kws = {"edgecolor": "black", "alpha": 0.5, "cumulative": True}, kde_kws = {"cumulative": True, "linestyle": "--", "color": "gray"})
+#		sim_cumulative_plot = sns.distplot(simlist, hist = True, kde = False, norm_hist = True, bins = binlist, color = 'blue', hist_kws = {"edgecolor": "black", "alpha": 0.5, "cumulative": True}, kde_kws = {"cumulative": True, "linestyle": "--", "color": "gray"})
+		sim_cumulative_plot = sns.histplot(simlist, stat = "density", kde = False, bins = binlist, common_norm = False, color = 'blue', edgecolor = "black", alpha = 0.5, cumulative = True, line_kws = {"cumulative": True, "linestyle": "--", "color": "gray"})
 		sim_cumulative_plot.text(0.25, 0.92, "P(>={0}): {1:.2%}".format(Ct, len([sim for sim in simlist if float(sim) >= float(Ct)])/float(len(simlist))), fontsize = 20, color = 'black', ha = 'center', va = 'bottom')
 #		plt.yticks(sim_cumulative_plot.get_yticks(), sim_cumulative_plot.get_yticks() * 100)
 		sim_cumulative_plot.yaxis.set_major_formatter(FuncFormatter('{0:.0%}'.format))
@@ -155,7 +157,7 @@ def sim_newtork(enGOclstr, SI, Ct, Inf, sig):
 				clstredGO_pvalue = line_clstredGO.split("\t")[5] 
 				clstredGO_corrpvalue = line_clstredGO.split("\t")[6]
 				clstredGO_xcatstest = line_clstredGO.split("\t")[7] 
-				clstredGO_ncatsref = line_clstredGO.split("\t")[8] if int(line_clstredGO.split("\t")[8]) <> 0 else 100
+				clstredGO_ncatsref = line_clstredGO.split("\t")[8] if int(line_clstredGO.split("\t")[8]) != 0 else 100
 				clstredGO_Xtotaltest = line_clstredGO.split("\t")[9]
 				clstredGO_Ntotalref = line_clstredGO.split("\t")[10]
 				clstredGO_NodeColor = colorlist[int(clstredGO_Clstr)-1] if int(clstredGO_Clstr) <= 10 else "#D3D3D3"
@@ -164,7 +166,7 @@ def sim_newtork(enGOclstr, SI, Ct, Inf, sig):
 			
 	for key_querygo in gosim_dict:
 		for key_subjectgo in gosim_dict:
-			if key_querygo <> key_subjectgo:
+			if key_querygo != key_subjectgo:
 				if (key_querygo, key_subjectgo) not in list(go_sim_newtork.edges()) and (key_subjectgo, key_querygo) not in list(go_sim_newtork.edges()):
 #					if max(gosim_dict[key_querygo][key_subjectgo], gosim_dict[key_subjectgo][key_querygo]) >= float(Ct):
 #						go_sim_newtork.add_edge(key_querygo, key_subjectgo, weight = max(gosim_dict[key_querygo][key_subjectgo], gosim_dict[key_subjectgo][key_querygo]))
@@ -173,8 +175,8 @@ def sim_newtork(enGOclstr, SI, Ct, Inf, sig):
 
 	try:
 		plt.switch_backend('agg')
-		plt.rcParams["figure.figsize"] = [10,10] 
-		nx.draw(go_sim_newtork, pos = nx.spring_layout(go_sim_newtork, dim = 2, center = [0.5,0.5], k = 1.4 * 1/math.sqrt(len(enGOclstr_info_dict.keys())), iterations = 25, scale = 0.5, weight = "weight"), node_size = [66 * math.sqrt(int(nx.get_node_attributes(go_sim_newtork,'xcatstest')[node])) for node in go_sim_newtork.nodes()], node_color = [nx.get_node_attributes(go_sim_newtork,'NodeColorAlpha')[node] for node in go_sim_newtork.nodes()], edge_color = "#CCCCCC", width = [0.4 * float(edgeweight) for edgeweight in nx.get_edge_attributes(go_sim_newtork, "weight").values()], with_labels = False, labels = OrderedDict([(node, nx.get_node_attributes(go_sim_newtork,'Description')[node]) for node in go_sim_newtork.nodes()]), font_size = 10, font_color = "gray", font_family = "sans") ## node_size = [12 * math.sqrt(int(nx.get_node_attributes(go_sim_newtork,'xcatstest')[node])) for node in go_sim_newtork.nodes()]. "sans" is the default family in ggplot2.
+		plt.rcParams["figure.figsize"] = [10,10]
+		nx.draw(go_sim_newtork, pos = nx.spring_layout(go_sim_newtork, dim = 2, center = [0.5,0.5], k = 1.4 * 1/math.sqrt(len(enGOclstr_info_dict.keys())), iterations = 25, scale = 0.5, weight = "weight"), node_size = [12 * math.sqrt(int(nx.get_node_attributes(go_sim_newtork,'ncatsref')[node])) for node in go_sim_newtork.nodes()], node_color = [nx.get_node_attributes(go_sim_newtork,'NodeColorAlpha')[node] for node in go_sim_newtork.nodes()], edge_color = "#CCCCCC", width = [0.4 * float(edgeweight) for edgeweight in nx.get_edge_attributes(go_sim_newtork, "weight").values()], with_labels = False, labels = OrderedDict([(node, nx.get_node_attributes(go_sim_newtork,'Description')[node]) for node in go_sim_newtork.nodes()]), font_size = 10, font_color = "gray", font_family = "sans") ## "sans" is the default family in ggplot2
 		plt.ylim([-0.02, 1.02])
 		plt.xlim([-0.02, 1.02])
 		plt.axis('off')	
@@ -235,7 +237,7 @@ def construct_go_hierarchy_subgraph(OBOInput, nodelist, sig = 0.05, **kwargs):
 	## If two nodes are connected in the orignal network, but not directly (meaning there are intermediate nodes, regardless of how many), these two nodes won't be connected in the subgraph. Need to identify these nodes and connect them.
 	for nodeA_subgraph in nodelist:
 		for nodeB_subgraph in nodelist:
-			if nodeA_subgraph <> nodeB_subgraph:
+			if nodeA_subgraph != nodeB_subgraph:
 				try:
 					if nx.has_path(go_hierarchy_subgraph, source = nodeA_subgraph, target = nodeB_subgraph) is False and nx.has_path(go_hierarchy_subgraph, source = nodeB_subgraph, target = nodeA_subgraph) is False: ## Check if two nodes are not connected, no matter how many steps away
 						if nx.has_path(go_hierarchy_digraph, source = nodeA_subgraph, target = nodeB_subgraph):
@@ -296,7 +298,7 @@ def construct_go_hierarchy_subgraph(OBOInput, nodelist, sig = 0.05, **kwargs):
 			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["Depth"] = node_attributes.split("\t")[3]
 			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["corrpvalue"] = node_attributes.split("\t")[5]
 			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["xcatstest"] = node_attributes.split("\t")[6] 
-			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["ncatsref"] = node_attributes.split("\t")[7] if int(node_attributes.split("\t")[7]) <> 0 else 100
+			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["ncatsref"] = node_attributes.split("\t")[7] if int(node_attributes.split("\t")[7]) != 0 else 100
 			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["Xtotaltest"] = node_attributes.split("\t")[8]
 			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["Ntotalref"] = node_attributes.split("\t")[9]
 #			go_hierarchy_subgraph.nodes()[nodes_in_subgraph]["Nodecolor"] = "#FF8C00"
@@ -337,13 +339,13 @@ def construct_go_hierarchy_subgraph(OBOInput, nodelist, sig = 0.05, **kwargs):
 		if rootlist:
 			pos = {}
 			unassignedy = 2.0
-			rootlist = sorted(rootlist, key = lambda rootnode : (int(go_hierarchy_subgraph.nodes()[rootnode]["xcatstest"]), len(list(go_hierarchy_subgraph.neighbors(rootnode)))), reverse = True)
+			rootlist = sorted(rootlist, key = lambda rootnode : (int(go_hierarchy_subgraph.nodes()[rootnode]["ncatsref"]), len(list(go_hierarchy_subgraph.neighbors(rootnode)))), reverse = True)
 			for root_num in range(len(rootlist)):
 				rootx = float(root_num) * len(rootlist) * 30
 				rooty = random.uniform(0.8, 1.6) 
 				pos = hierarchy_pos(go_hierarchy_subgraph, rootlist[root_num], width = float((len(rootlist) - 1) * len(rootlist) * 10), rootx = rootx, rooty = rooty, vert_gap = 0.8, pos = pos)
 			if singletlist: ## If not empty
-				singletlist = sorted(singletlist, key = lambda singletnode : (len(list(go_hierarchy_subgraph.neighbors(singletnode))),int(go_hierarchy_subgraph.nodes()[singletnode]["xcatstest"])), reverse = True)
+				singletlist = sorted(singletlist, key = lambda singletnode : (len(list(go_hierarchy_subgraph.neighbors(singletnode))),int(go_hierarchy_subgraph.nodes()[singletnode]["ncatsref"])), reverse = True)
 				for singlet_num in range(len(singletlist)):
 					pos[singletlist[singlet_num]] = (singlet_num * ((len(rootlist) - 1) * len(rootlist)/len(singletlist)) * 30, random.uniform(1.8, 2.2))
 			for node in list(go_hierarchy_subgraph.nodes()):
@@ -354,7 +356,7 @@ def construct_go_hierarchy_subgraph(OBOInput, nodelist, sig = 0.05, **kwargs):
 		else:
 			pos = nx.spring_layout(go_hierarchy_subgraph, dim = 2, center = [0.5,0.5], k = 1.4 * 1/math.sqrt(len(nodelist)), iterations = 25, scale = 0.5)
 		
-		hierarchy_subgraph = nx.draw_networkx_nodes(go_hierarchy_subgraph, pos, node_size = [50 * math.sqrt(int(nx.get_node_attributes(go_hierarchy_subgraph,'xcatstest')[node])) for node in go_hierarchy_subgraph.nodes()], node_color = [nx.get_node_attributes(go_hierarchy_subgraph,'NodeColorAlpha')[node] for node in go_hierarchy_subgraph.nodes()], alpha = 1.0, edgecolors = "#696969", linewidths = 0.8) # node_size = [50 * (int(nx.get_node_attributes(go_hierarchy_subgraph,'xcatstest')[node]) ** (1.0/3.0)) for node in go_hierarchy_subgraph.nodes()]
+		hierarchy_subgraph = nx.draw_networkx_nodes(go_hierarchy_subgraph, pos, node_size = [30 * (int(nx.get_node_attributes(go_hierarchy_subgraph,'ncatsref')[node]) ** (1.0/3.0)) for node in go_hierarchy_subgraph.nodes()], node_color = [nx.get_node_attributes(go_hierarchy_subgraph,'NodeColorAlpha')[node] for node in go_hierarchy_subgraph.nodes()], alpha = 1.0, edgecolors = "#696969", linewidths = 0.8)
 #		nx.draw_networkx_labels(go_hierarchy_subgraph, pos, labels = OrderedDict([(node, nx.get_node_attributes(go_hierarchy_subgraph,'Name')[node]) for node in go_hierarchy_subgraph.nodes() if node in rootlist or node in singletlist]), font_size = 6.5, font_weight = 'medium', font_color = "black", font_family = "sans-serif")
 		nx.draw_networkx_edges(go_hierarchy_subgraph, pos, edgelist = edges_present, arrows = True, width = 0.6, edge_color = '#000000', alpha = 0.6) # #808080 ##arrowsize = 8, arrowstyle = '->',
 		nx.draw_networkx_edges(go_hierarchy_subgraph, pos, edgelist = edges_absent, arrows = True, width = 0.6, edge_color = '#D3D3D3', alpha = 0.8, style = 'dashed') ## style = "dashed" doesn't seem to work. ##arrowsize = 8, arrowstyle = '->', 
