@@ -1,4 +1,4 @@
-# GOMCL
+# GOMCL (for python3)
 [<img src="images/GOMCL%20DOI%20Badge.png" height="25%" width="25%">](https://doi.org/10.1186/s12859-020-3447-4)
 ## Overview
 GOMCL is a tool to cluster and extract summarized associations of Gene Ontology based functions in omics data. It clusters GO terms using MCL based on overlapping ratios, OC (*Overlap coefficient*) or JC (*Jaccard coefficient*). The resulting clusters can be further analyzed and separated into sub-clusters using a second script, GOMCL-sub. This tool helps researchers to reduce time spent on manual curation of large lists of GO terms and minimize biases introduced by shared GO terms in data interpretation. 
