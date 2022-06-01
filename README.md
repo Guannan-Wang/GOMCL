@@ -23,11 +23,11 @@ GOMCL is a tool to cluster and extract summarized associations of Gene Ontology 
 ## Installation
 **1. Download zip file and install**
 ```
- wget https://github.com/Guannan-Wang/GOMCL/archive/master.zip
- unzip master.zip
- cd GOMCL-master
+ wget https://github.com/Guannan-Wang/GOMCL/archive/py3.zip
+ unzip GOMCL-py3.zip
+ cd GOMCL-py3
  chmod 755 *.py scripts/*.py
- export PATH=/path/to/GOMCL-master:$PATH 
+ export PATH=/path/to/GOMCL-py3:$PATH 
 ```
 After installation, please check if GOMCL is properly installed by simply typing the following command:
 ```
