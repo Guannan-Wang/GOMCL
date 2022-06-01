@@ -64,7 +64,7 @@ if __name__ == "__main__":
 		processed = []
 		for key_querygo in gosim_dict:
 			for key_subjectgo in gosim_dict:
-				if str(key_querygo) <> str(key_subjectgo):
+				if str(key_querygo) != str(key_subjectgo):
 					pair_qs = str(key_querygo) + "_" + str(key_subjectgo)
 					pair_sq = str(key_subjectgo) + "_" + str(key_querygo)
 					if pair_qs not in processed and pair_sq not in processed:
@@ -138,7 +138,7 @@ if __name__ == "__main__":
 				processed = []
 				for clstredGO_A in clstred_go_dict[clstrnum]:
 					for clstredGO_B in clstred_go_dict[clstrnum]:
-						if str(clstredGO_A) <> str(clstredGO_B):
+						if str(clstredGO_A) != str(clstredGO_B):
 							pairAB = str(clstredGO_A) + str(clstredGO_B)
 							pairBA = str(clstredGO_B) + str(clstredGO_A)
 							if pairAB not in processed and pairBA not in processed:
