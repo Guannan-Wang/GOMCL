@@ -119,6 +119,21 @@ def goea_formatter(OBOInput, goeatool, enGOraw, dswitch = False):
 				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[10].split(", ")))
 			else:
 				continue
+				
+		elif str(goeatool).lower() == "goenrichment":
+			if len(line_enGOraw.split("\t")) > 0 and line_enGOraw.split("\t")[0].strip(".").startswith("GO:"):
+				goea_go_id = str(line_enGOraw.split("\t")[0])
+				goea_go_description = str(line_enGOraw.split("\t")[6])
+				goea_go_pvalue = str(line_enGOraw.split("\t")[4])
+				goea_go_adj_pvalue = str(line_enGOraw.split("\t")[5])
+				goea_go_cats_test = 0 #int(line_enGOraw.split("\t")[1])
+				goea_go_cats_ref = 0 #int(line_enGOraw.split("\t")[])
+				goea_go_total_test = 0 #int(line_enGOraw.split("\t")[])
+				goea_go_total_ref = 0 #int(line_enGOraw.split("\t")[])
+				goea_go_geneset = str("|".join(line_enGOraw.split("\t")[7].split(",")))
+			else:
+				continue
+				
 		elif str(goeatool).lower() == "generic":
 			if len(line_enGOraw.split("\t")) > 1 and line_enGOraw.startswith("GO:"):
 				goea_go_id = str(line_enGOraw.split("\t")[0])
@@ -206,7 +221,7 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description = synopsis, formatter_class = argparse.RawTextHelpFormatter)
 	parser.add_argument("OBOInput", metavar = "-OBOInput", help = "OBO file from Gene Ontology", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## Cannot specify 'dest' for positional arguments
 	parser.add_argument("enGO", metavar = "-enGO", help = "Enriched GO input file may be from different GO enrichment analysis tools (e.g. BiNGO, agriGO, AmiGO, etc..)", action = "store", nargs = None, const = None, default = None, type = None, choices = None) ## See below.
-	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "GOrilla", "gProfiler", "GOATOOLS", "generic"]) ## See below.
+	parser.add_argument("-got", metavar = None, help = "GO enrichment tools used for enrichment test (default: %(default)s)", action = "store", nargs = None, const = None, default = "BiNGO", type = str, choices = ["BiNGO", "agriGO", "AmiGO", "PANTHER", "GOrilla", "gProfiler", "Enrichr", "GOATOOLS", "GOEnrichment", "generic"]) ## See below.
 	parser.add_argument("-gosize", metavar = None, dest = None, help = "Threshold for the size of GO terms, only GO terms below this threshold will be printed out", action = "store", nargs = None, const = None, default = None, type = int, choices = None)
 	parser.add_argument("-gotype", metavar = None, dest = None, help = "Type of GO terms, only GO terms in this or these categories will be printed out", action = "store", nargs = "*", const = None, default = "BP", type = None, choices = None)
 	parser.add_argument("-d", dest = "dswitch", help = "Calculate depth for input GO terms", action = "store_true", default = None) ## Argument present --> true, not present --> false. The followings are not compatible with "store_true": metavar = None, nargs = None,const = None, type = None, choices = None
